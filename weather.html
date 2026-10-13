@@ -1,0 +1,168 @@
+
+{% extends "base.html" %}
+
+{% block title %}Weather | Smart Crop Prediction{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <span class="eyebrow">LIVE WEATHER LOOKUP</span>
+    <h1>Weather for your field</h1>
+    <p>Enter a city to check its current weather automatically.</p>
+</section>
+
+<section class="panel weather-panel">
+
+    <form class="weather-search" id="weatherForm">
+        <input
+            type="text"
+            id="cityInput"
+            name="city"
+            placeholder="Enter city, e.g. Chennai"
+            value="{{ city }}"
+            autocomplete="off"
+            required
+        >
+        <button type="submit" class="btn btn-primary">
+            Get weather
+        </button>
+    </form>
+
+    <p id="weatherStatus" role="status" aria-live="polite">
+        Type a city name to see its weather.
+    </p>
+
+    <div id="weatherResult" hidden>
+        <div class="weather-location">
+            📍 <span id="weatherCity"></span>
+            <span class="muted" id="weatherTime"></span>
+        </div>
+
+        <div class="weather-grid">
+            <div class="weather-tile">
+                <span>🌡️</span>
+                <small>Temperature</small>
+                <strong><span id="temperature"></span> °C</strong>
+            </div>
+
+            <div class="weather-tile">
+                <span>💧</span>
+                <small>Humidity</small>
+                <strong><span id="humidity"></span> %</strong>
+            </div>
+
+            <div class="weather-tile">
+                <span>🌧️</span>
+                <small>Rain</small>
+                <strong><span id="rain"></span> mm</strong>
+            </div>
+
+            <div class="weather-tile">
+                <span>💨</span>
+                <small>Wind speed</small>
+                <strong><span id="wind"></span> km/h</strong>
+            </div>
+        </div>
+
+        <p class="tiny-note">
+            Weather data provided by Open-Meteo.
+        </p>
+    </div>
+</section>
+
+<script>
+(() => {
+    const input = document.getElementById("cityInput");
+    const form = document.getElementById("weatherForm");
+    const status = document.getElementById("weatherStatus");
+    const result = document.getElementById("weatherResult");
+
+    let timer;
+    let controller;
+    let requestNumber = 0;
+
+    async function loadWeather() {
+        const city = input.value.trim();
+        const currentRequest = ++requestNumber;
+
+        clearTimeout(timer);
+
+        if (controller) {
+            controller.abort();
+            controller = null;
+        }
+
+        if (!city) {
+            result.hidden = true;
+            status.textContent = "Type a city name to see its weather.";
+            return;
+        }
+
+        controller = new AbortController();
+        status.textContent = "Loading weather...";
+        result.hidden = true;
+
+        try {
+            const response = await fetch(
+                `/api/weather?city=${encodeURIComponent(city)}`,
+                { signal: controller.signal }
+            );
+
+            const data = await response.json();
+
+            if (currentRequest !== requestNumber) return;
+
+            if (!response.ok || data.error) {
+                status.textContent = data.error || "Could not load weather.";
+                return;
+            }
+
+            document.getElementById("weatherCity").textContent =
+                data.city || city;
+
+            document.getElementById("weatherTime").textContent =
+                data.time ? " • " + data.time : "";
+
+            document.getElementById("temperature").textContent =
+                data.temperature ?? "—";
+
+            document.getElementById("humidity").textContent =
+                data.humidity ?? "—";
+
+            document.getElementById("rain").textContent =
+                data.rain ?? "—";
+
+            document.getElementById("wind").textContent =
+                data.wind ?? "—";
+
+            status.textContent = "";
+            result.hidden = false;
+
+        } catch (error) {
+            if (error.name === "AbortError") return;
+
+            if (currentRequest === requestNumber) {
+                status.textContent =
+                    "Weather service unavailable. Please try again.";
+            }
+        }
+    }
+
+    input.addEventListener("input", () => {
+        clearTimeout(timer);
+
+        timer = setTimeout(loadWeather, 700);
+    });
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        loadWeather();
+    });
+
+    if (input.value.trim()) {
+        loadWeather();
+    }
+})();
+</script>
+
+{% endblock %}

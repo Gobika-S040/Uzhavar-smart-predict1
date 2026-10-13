@@ -1,0 +1,499 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home | Uzhavar Crop Prediction{% endblock %}
+
+{% block content %}
+
+<style>
+.home-dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 50px;
+    color: #183b2b;
+}
+
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 42px 35px;
+    border-radius: 24px;
+    background: linear-gradient(125deg, #123d2b, #26734b);
+    color: white;
+    margin-bottom: 26px;
+}
+
+.home-hero .eyebrow {
+    display: inline-block;
+    color: #d8f5bd;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.home-hero h1 {
+    font-size: clamp(28px, 4vw, 43px);
+    line-height: 1.15;
+    margin: 0 0 14px;
+    color: white;
+}
+
+.home-hero p {
+    max-width: 600px;
+    line-height: 1.7;
+    color: #e1f0e5;
+    margin: 0;
+}
+
+.hero-icon {
+    position: absolute;
+    right: 35px;
+    top: 30px;
+    font-size: 75px;
+    opacity: 0.9;
+}
+
+.section-heading {
+    margin: 28px 0 18px;
+}
+
+.section-heading h2 {
+    font-size: 25px;
+    margin: 0 0 7px;
+    color: #183b2b;
+}
+
+.section-heading p {
+    color: #64766b;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.crop-card {
+    background: white;
+    border: 1px solid #e2ebe4;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 8px 28px rgba(25, 65, 42, 0.07);
+}
+
+.weather-city {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    padding: 18px;
+    background: #f2f8f1;
+    border: 1px solid #dfebdd;
+    border-radius: 15px;
+    margin-bottom: 24px;
+}
+
+.weather-city .field {
+    flex: 1 1 220px;
+}
+
+.home-dashboard label {
+    display: block;
+    font-weight: 650;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #294b38;
+}
+
+.home-dashboard input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px 13px;
+    border: 1px solid #d5e0d7;
+    border-radius: 10px;
+    background: #fff;
+    color: #203a2b;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.home-dashboard input:focus {
+    border-color: #27814c;
+    box-shadow: 0 0 0 3px rgba(39, 129, 76, 0.12);
+}
+
+.home-dashboard small {
+    display: block;
+    color: #68796e;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+.weather-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 20px 0 28px;
+}
+
+.weather-card {
+    padding: 18px;
+    border-radius: 15px;
+    background: #f7faf6;
+    border: 1px solid #e5ede4;
+}
+
+.weather-card .weather-icon {
+    font-size: 24px;
+}
+
+.weather-card span {
+    display: block;
+    color: #64766b;
+    font-size: 13px;
+    margin: 8px 0;
+}
+
+.weather-card strong {
+    font-size: 23px;
+    color: #21653d;
+    overflow-wrap: anywhere;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 19px;
+}
+
+.field-grid .field {
+    min-width: 0;
+}
+
+.section-divider {
+    border: 0;
+    border-top: 1px solid #e7eee8;
+    margin: 27px 0;
+}
+
+.predict-button {
+    width: 100%;
+    margin-top: 25px;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    background: #237844;
+    color: white;
+    font-size: 16px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.predict-button:hover {
+    background: #185d33;
+    transform: translateY(-1px);
+}
+
+.form-note {
+    text-align: center;
+    color: #68796e;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 13px;
+}
+
+@media (max-width: 650px) {
+    .home-dashboard {
+        padding: 12px 10px 30px;
+    }
+
+    .home-hero {
+        padding: 30px 22px;
+    }
+
+    .hero-icon {
+        position: static;
+        display: block;
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .crop-card {
+        padding: 18px;
+    }
+
+    .weather-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="home-dashboard">
+
+    <section class="home-hero">
+        <span class="hero-icon" aria-hidden="true">🌾</span>
+        <span class="eyebrow">SMART AGRICULTURE PLATFORM</span>
+        <h1>Grow Smarter.<br>Harvest Better.</h1>
+        <p>
+            Make informed farming decisions with climate information,
+            soil nutrients and machine-learning-based crop recommendations.
+        </p>
+    </section>
+
+    <div class="section-heading">
+        <h2>🌱 Crop Prediction Dashboard</h2>
+        <p>Enter your location and soil readings to get a crop recommendation.</p>
+    </div>
+
+    <section class="crop-card">
+        <form method="POST" action="{{ url_for('home') }}" id="cropForm">
+
+            <div class="weather-city">
+                <div class="field">
+                    <label for="weatherCityInput">📍 Your City</label>
+                    <input
+                        type="text"
+                        id="weatherCityInput"
+                        placeholder="Enter city, e.g. Chennai"
+                        autocomplete="off"
+                        required
+                    >
+                    <small id="weatherMessage" role="status" aria-live="polite">
+                        Enter a city to load current weather automatically.
+                    </small>
+                </div>
+            </div>
+
+            <div class="section-heading">
+                <h2>🌦️ Current Weather</h2>
+                <p>These values are filled using the live weather service.</p>
+            </div>
+
+            <div class="weather-cards">
+                <div class="weather-card">
+                    <div class="weather-icon">🌡️</div>
+                    <span>Temperature</span>
+                    <strong><span id="temperatureDisplay">—</span> °C</strong>
+                </div>
+
+                <div class="weather-card">
+                    <div class="weather-icon">💧</div>
+                    <span>Humidity</span>
+                    <strong><span id="humidityDisplay">—</span> %</strong>
+                </div>
+
+                <div class="weather-card">
+                    <div class="weather-icon">🌧️</div>
+                    <span>Rainfall</span>
+                    <strong><span id="rainfallDisplay">—</span> mm</strong>
+                </div>
+            </div>
+
+            <div class="section-heading">
+                <h2>🧪 Soil & Climate Parameters</h2>
+                <p>Enter the soil test results for your field.</p>
+            </div>
+
+            <div class="field-grid">
+                <div class="field">
+                    <label for="nitrogen">Nitrogen (N)</label>
+                    <input type="number" id="nitrogen" name="N"
+                           min="0" step="any" placeholder="e.g. 90" required>
+                </div>
+
+                <div class="field">
+                    <label for="phosphorus">Phosphorus (P)</label>
+                    <input type="number" id="phosphorus" name="P"
+                           min="0" step="any" placeholder="e.g. 42" required>
+                </div>
+
+                <div class="field">
+                    <label for="potassium">Potassium (K)</label>
+                    <input type="number" id="potassium" name="K"
+                           min="0" step="any" placeholder="e.g. 43" required>
+                </div>
+
+                <div class="field">
+                    <label for="ph">Soil pH</label>
+                    <input type="number" id="ph" name="ph"
+                           min="0" max="14" step="any"
+                           placeholder="e.g. 6.5" required>
+                </div>
+            </div>
+
+            <!-- Keep these fields for the existing crop prediction backend.
+                 Values are populated by the weather lookup script. -->
+            <div style="margin-top: 20px;">
+                <details>
+                    <summary style="cursor:pointer; font-weight:650; color:#294b38;">
+                        View or edit weather values
+                    </summary>
+                    <div class="field-grid" style="margin-top:18px;">
+                        <div class="field">
+                            <label for="temperature">Temperature (°C)</label>
+                            <input type="number" id="temperature" name="temperature"
+                                   step="any" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="humidity">Humidity (%)</label>
+                            <input type="number" id="humidity" name="humidity"
+                                   min="0" max="100" step="any" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="rainfall">Rainfall (mm)</label>
+                            <input type="number" id="rainfall" name="rainfall"
+                                   min="0" step="any" required>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <button type="submit" class="predict-button">
+                🌱 Predict Suitable Crop
+            </button>
+
+            <p class="form-note">
+                For best results, use soil-test values and verify the weather readings
+                before making farming decisions.
+            </p>
+        </form>
+    </section>
+    ```html
+{% if prediction %}
+    <div style="margin-top: 25px; padding: 22px;
+                background: #eaf7ed; border: 1px solid #b7dfc0;
+                border-radius: 14px; text-align: center;">
+        <h2 style="color: #21653d;">🌾 Recommended Crop</h2>
+        <h3 style="color: #183b2b; font-size: 28px;">
+            {{ prediction | title }}
+        </h3>
+        <p>Your suitable crop prediction is ready!</p>
+    </div>
+{% endif %}
+
+{% if error %}
+    <div style="margin-top: 20px; padding: 15px;
+                background: #fff0f0; color: #a12626;
+                border-radius: 10px;">
+        {{ error }}
+    </div>
+{% endif %}
+```
+
+</div>
+
+<script>
+(() => {
+    const cityInput = document.getElementById("weatherCityInput");
+    const message = document.getElementById("weatherMessage");
+
+    const temperatureInput = document.getElementById("temperature");
+    const humidityInput = document.getElementById("humidity");
+    const rainfallInput = document.getElementById("rainfall");
+
+    const temperatureDisplay = document.getElementById("temperatureDisplay");
+    const humidityDisplay = document.getElementById("humidityDisplay");
+    const rainfallDisplay = document.getElementById("rainfallDisplay");
+
+    let timer;
+    let controller;
+    let requestId = 0;
+    let weatherLoaded = false;
+
+    function clearWeather() {
+        weatherLoaded = false;
+        temperatureInput.value = "";
+        humidityInput.value = "";
+        rainfallInput.value = "";
+        temperatureDisplay.textContent = "—";
+        humidityDisplay.textContent = "—";
+        rainfallDisplay.textContent = "—";
+    }
+
+    async function loadWeather() {
+        const city = cityInput.value.trim();
+        const thisRequest = ++requestId;
+
+        if (controller) controller.abort();
+        clearWeather();
+
+        if (!city) {
+            message.textContent = "Enter a city name.";
+            return;
+        }
+
+        controller = new AbortController();
+        message.textContent = "Loading weather...";
+
+        try {
+            const response = await fetch(
+                `/api/weather?city=${encodeURIComponent(city)}`,
+                { signal: controller.signal }
+            );
+            const data = await response.json();
+
+            if (thisRequest !== requestId) return;
+
+            if (!response.ok || data.error) {
+                message.textContent =
+                    data.error || "Could not load weather. Try another city.";
+                return;
+            }
+
+            temperatureInput.value = data.temperature ?? "";
+            humidityInput.value = data.humidity ?? "";
+            rainfallInput.value = data.rain ?? "";
+
+            temperatureDisplay.textContent = data.temperature ?? "—";
+            humidityDisplay.textContent = data.humidity ?? "—";
+            rainfallDisplay.textContent = data.rain ?? "—";
+
+            weatherLoaded = [
+                data.temperature,
+                data.humidity,
+                data.rain
+            ].every(value => value !== null && value !== undefined && value !== "");
+
+            message.textContent = weatherLoaded
+                ? `Weather loaded for ${data.city}.`
+                : "Some weather values are missing. Please check them.";
+
+        } catch (error) {
+            if (error.name !== "AbortError" && thisRequest === requestId) {
+                message.textContent =
+                    "Weather service unavailable. Check your internet and try again.";
+            }
+        }
+    }
+
+    cityInput.addEventListener("input", () => {
+        clearTimeout(timer);
+        if (controller) controller.abort();
+
+        requestId++;
+        clearWeather();
+
+        message.textContent = cityInput.value.trim()
+            ? "Searching for weather..."
+            : "Enter a city to load current weather automatically.";
+
+        timer = setTimeout(loadWeather, 700);
+    });
+
+    document.getElementById("cropForm").addEventListener("submit", event => {
+        if (!weatherLoaded) {
+            event.preventDefault();
+            message.textContent =
+                "Please enter a valid city and wait for the weather to load.";
+        }
+    });
+})();
+</script>
+
+{% endblock %}
