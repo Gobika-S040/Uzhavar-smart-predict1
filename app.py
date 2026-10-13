@@ -25,6 +25,9 @@ if not app.secret_key:
             "Please set SECRET_KEY in Render environment variables."
         )
     app.secret_key = os.urandom(32)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
 
 # Project files
 DATA_FILE = "Crop_recommendation.csv"
